@@ -13,6 +13,7 @@ type StatApp struct {
 	PusherCount int64       `json:"pusher_count"`
 	Ios         StatIos     `json:"ios"`
 	Android     StatAndroid `json:"android"`
+	Twilio      StatTwilio  `json:"twilio"`
 }
 
 type StatAndroid struct {
@@ -25,6 +26,11 @@ type StatIos struct {
 	PushError   int64 `json:"push_error"`
 }
 
+type StatTwilio struct {
+	PushSuccess int64 `json:"push_success"`
+	PushError   int64 `json:"push_error"`
+}
+
 func InitStat() {
 	StatGaurun.QueueUsage = 0
 	StatGaurun.PusherCount = 0
@@ -32,6 +38,8 @@ func InitStat() {
 	StatGaurun.Ios.PushError = 0
 	StatGaurun.Android.PushSuccess = 0
 	StatGaurun.Android.PushError = 0
+	StatGaurun.Twilio.PushSuccess = 0
+	StatGaurun.Twilio.PushError = 0
 }
 
 func StatsHandler(w http.ResponseWriter, r *http.Request) {
@@ -44,6 +52,8 @@ func StatsHandler(w http.ResponseWriter, r *http.Request) {
 	result.Ios.PushError = atomic.LoadInt64(&StatGaurun.Ios.PushError)
 	result.Android.PushSuccess = atomic.LoadInt64(&StatGaurun.Android.PushSuccess)
 	result.Android.PushError = atomic.LoadInt64(&StatGaurun.Android.PushError)
+	result.Twilio.PushSuccess = atomic.LoadInt64(&StatGaurun.Twilio.PushSuccess)
+	result.Twilio.PushError = atomic.LoadInt64(&StatGaurun.Twilio.PushError)
 
 	respBody, err := json.MarshalIndent(result, "", " ")
 	if err != nil {

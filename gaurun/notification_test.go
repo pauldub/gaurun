@@ -34,6 +34,14 @@ func TestValidateNotification(t *testing.T) {
 		},
 		{
 			RequestGaurunNotification{
+				Tokens:   []string{"test token"},
+				Platform: 3,
+				Message:  "test message",
+			},
+			nil,
+		},
+		{
+			RequestGaurunNotification{
 				Tokens:     []string{"test token"},
 				Platform:   1,
 				Message:    "test message with identifier",
@@ -52,7 +60,7 @@ func TestValidateNotification(t *testing.T) {
 		{
 			RequestGaurunNotification{
 				Tokens:   []string{"test token"},
-				Platform: 100, /* neither iOS nor Android */
+				Platform: 100, /* neither iOS nor Android nor Twilio */
 			},
 			errors.New("invalid platform"),
 		},

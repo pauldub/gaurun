@@ -14,16 +14,16 @@ func TestIsExternalServerError(t *testing.T) {
 		Platform int
 		Expected bool
 	}{
-		{push.ErrIdleTimeout, PlatFormIos, true},
-		{push.ErrShutdown, PlatFormIos, true},
-		{push.ErrInternalServerError, PlatFormIos, true},
-		{push.ErrServiceUnavailable, PlatFormIos, true},
-		{errors.New("no error"), PlatFormIos, false},
+		{push.ErrIdleTimeout, PlatformIos, true},
+		{push.ErrShutdown, PlatformIos, true},
+		{push.ErrInternalServerError, PlatformIos, true},
+		{push.ErrServiceUnavailable, PlatformIos, true},
+		{errors.New("no error"), PlatformIos, false},
 
-		{errors.New("Unavailable"), PlatFormAndroid, true},
-		{errors.New("InternalServerError"), PlatFormAndroid, true},
-		{errors.New("Timeout"), PlatFormAndroid, true},
-		{errors.New("no error"), PlatFormAndroid, false},
+		{errors.New("Unavailable"), PlatformAndroid, true},
+		{errors.New("InternalServerError"), PlatformAndroid, true},
+		{errors.New("Timeout"), PlatformAndroid, true},
+		{errors.New("no error"), PlatformAndroid, false},
 
 		{errors.New("no error"), 100 /* neither iOS nor Android */, false},
 	}

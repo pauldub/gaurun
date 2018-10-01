@@ -45,6 +45,15 @@ func (suite *ConfigTestSuite) TestValidateConfDefault() {
 	assert.Equal(suite.T(), int64(suite.ConfGaurunDefault.Android.KeepAliveConns), suite.ConfGaurunDefault.Core.WorkerNum)
 	assert.Equal(suite.T(), suite.ConfGaurunDefault.Android.RetryMax, 1)
 	assert.Equal(suite.T(), suite.ConfGaurunDefault.Android.UseFCM, true)
+	// Twilio
+	assert.Equal(suite.T(), suite.ConfGaurunDefault.Twilio.Enabled, false)
+	assert.Equal(suite.T(), suite.ConfGaurunDefault.Twilio.AuthToken, "")
+	assert.Equal(suite.T(), suite.ConfGaurunDefault.Twilio.AccountSID, "")
+	assert.Equal(suite.T(), suite.ConfGaurunDefault.Twilio.FromNumber, "")
+	assert.Equal(suite.T(), suite.ConfGaurunDefault.Twilio.Timeout, 5)
+	assert.Equal(suite.T(), suite.ConfGaurunDefault.Twilio.KeepAliveTimeout, 90)
+	assert.Equal(suite.T(), int64(suite.ConfGaurunDefault.Twilio.KeepAliveConns), suite.ConfGaurunDefault.Core.WorkerNum)
+	assert.Equal(suite.T(), suite.ConfGaurunDefault.Twilio.RetryMax, 1)
 	// Ios
 	assert.Equal(suite.T(), suite.ConfGaurunDefault.Ios.Enabled, true)
 	assert.Equal(suite.T(), suite.ConfGaurunDefault.Ios.PemCertPath, "")
@@ -77,6 +86,15 @@ func (suite *ConfigTestSuite) TestValidateConf() {
 	assert.Equal(suite.T(), suite.ConfGaurun.Android.KeepAliveConns, 4)
 	assert.Equal(suite.T(), suite.ConfGaurun.Android.RetryMax, 1)
 	assert.Equal(suite.T(), suite.ConfGaurun.Android.UseFCM, false)
+	// Twilio
+	assert.Equal(suite.T(), suite.ConfGaurun.Twilio.Enabled, true)
+	assert.Equal(suite.T(), suite.ConfGaurun.Twilio.AccountSID, "account sid for Twilio")
+	assert.Equal(suite.T(), suite.ConfGaurun.Twilio.AuthToken, "auth token for Twilio")
+	assert.Equal(suite.T(), suite.ConfGaurun.Twilio.FromNumber, "from number for Twilio")
+	assert.Equal(suite.T(), suite.ConfGaurun.Twilio.Timeout, 5)
+	assert.Equal(suite.T(), suite.ConfGaurun.Twilio.KeepAliveTimeout, 30)
+	assert.Equal(suite.T(), suite.ConfGaurun.Twilio.KeepAliveConns, 4)
+	assert.Equal(suite.T(), suite.ConfGaurun.Twilio.RetryMax, 1)
 	// Ios
 	assert.Equal(suite.T(), suite.ConfGaurun.Ios.Enabled, true)
 	assert.Equal(suite.T(), suite.ConfGaurun.Ios.PemCertPath, "cert.pem")
@@ -95,3 +113,4 @@ func (suite *ConfigTestSuite) TestValidateConf() {
 func TestConfigTestSuite(t *testing.T) {
 	suite.Run(t, new(ConfigTestSuite))
 }
+

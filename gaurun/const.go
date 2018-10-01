@@ -5,8 +5,9 @@ const (
 )
 
 const (
-	PlatFormIos = iota + 1
-	PlatFormAndroid
+	PlatformIos = iota + 1
+	PlatformAndroid
+	PlatformTwilio
 )
 
 const (

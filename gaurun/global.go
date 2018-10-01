@@ -3,6 +3,7 @@ package gaurun
 import (
 	"net/http"
 
+	"github.com/kevinburke/twilio-go"
 	"github.com/mercari/gaurun/gcm"
 
 	"go.uber.org/zap"
@@ -18,8 +19,9 @@ var (
 	// Stat for Gaurun
 	StatGaurun StatApp
 	// http client for APNs and GCM/FCM
-	APNSClient *http.Client
-	GCMClient  *gcm.Client
+	APNSClient   *http.Client
+	GCMClient    *gcm.Client
+	TwilioClient *twilio.Client
 	// access and error logger
 	LogAccess *zap.Logger
 	LogError  *zap.Logger

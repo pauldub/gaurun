@@ -112,10 +112,12 @@ func LogAcceptedRequest(r *http.Request) {
 func LogPush(id uint64, status, token string, ptime float64, req RequestGaurunNotification, errPush error) {
 	var plat string
 	switch req.Platform {
-	case PlatFormIos:
+	case PlatformIos:
 		plat = "ios"
-	case PlatFormAndroid:
+	case PlatformAndroid:
 		plat = "android"
+	case PlatformTwilio:
+		plat = "twilio"
 	}
 
 	ptime = math.Floor(ptime*1000) / 1000 // %.3f conversion

@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"time"
 
+	twilio "github.com/kevinburke/twilio-go"
 	"github.com/mercari/gaurun/gcm"
 )
 
@@ -52,6 +53,26 @@ func InitGCMClient() error {
 		Transport: transport,
 		Timeout:   time.Duration(ConfGaurun.Android.Timeout) * time.Second,
 	}
+
+	return nil
+}
+
+func InitTwilioClient() error {
+	transport := &http.Transport{
+		MaxIdleConnsPerHost: ConfGaurun.Twilio.KeepAliveConns,
+		Dial: (&net.Dialer{
+			Timeout:   time.Duration(ConfGaurun.Twilio.Timeout) * time.Second,
+			KeepAlive: time.Duration(keepAliveInterval(ConfGaurun.Twilio.KeepAliveTimeout)) * time.Second,
+		}).Dial,
+		IdleConnTimeout: time.Duration(ConfGaurun.Twilio.KeepAliveTimeout) * time.Second,
+	}
+
+	httpClient := &http.Client{
+		Transport: transport,
+		Timeout:   time.Duration(ConfGaurun.Twilio.Timeout) * time.Second,
+	}
+
+	TwilioClient = twilio.NewClient(ConfGaurun.Twilio.AccountSID, ConfGaurun.Twilio.AuthToken, httpClient)
 
 	return nil
 }

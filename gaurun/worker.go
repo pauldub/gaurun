@@ -33,11 +33,11 @@ func StartPushWorkers(workerNum, queueNum int64) {
 
 func isExternalServerError(err error, platform int) bool {
 	switch platform {
-	case PlatFormIos:
+	case PlatformIos:
 		if err == push.ErrIdleTimeout || err == push.ErrShutdown || err == push.ErrInternalServerError || err == push.ErrServiceUnavailable {
 			return true
 		}
-	case PlatFormAndroid:
+	case PlatformAndroid:
 		if err.Error() == "Unavailable" || err.Error() == "InternalServerError" || strings.Contains(err.Error(), "Timeout") {
 			return true
 		}
@@ -85,12 +85,15 @@ func pushNotificationWorker() {
 		notification := <-QueueNotification
 
 		switch notification.Platform {
-		case PlatFormIos:
+		case PlatformIos:
 			pusher = pushNotificationIos
 			retryMax = ConfGaurun.Ios.RetryMax
-		case PlatFormAndroid:
+		case PlatformAndroid:
 			pusher = pushNotificationAndroid
 			retryMax = ConfGaurun.Android.RetryMax
+		case PlatformTwilio:
+			pusher = pushNotificationTwilio
+			retryMax = ConfGaurun.Twilio.RetryMax
 		default:
 			LogError.Warn(fmt.Sprintf("invalid platform: %d", notification.Platform))
 			continue

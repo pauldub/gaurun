@@ -19,7 +19,7 @@ func init() {
 
 func BenchmarkLogPushIOSOmitempty(b *testing.B) {
 	req := RequestGaurunNotification{
-		Platform: PlatFormIos,
+		Platform: PlatformIos,
 	}
 	errPush := fmt.Errorf("error")
 	for i := 0; i < b.N; i++ {
@@ -29,7 +29,7 @@ func BenchmarkLogPushIOSOmitempty(b *testing.B) {
 
 func BenchmarkLogPushIOSFull(b *testing.B) {
 	req := RequestGaurunNotification{
-		Platform:         PlatFormIos,
+		Platform:         PlatformIos,
 		Badge:            1,
 		Sound:            "foo",
 		ContentAvailable: true,

@@ -2,11 +2,13 @@ package gaurun
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"net/url"
 	"sync/atomic"
 	"time"
 
@@ -67,10 +69,12 @@ func enqueueNotifications(notifications []RequestGaurunNotification) {
 		}
 		var enabledPush bool
 		switch notification.Platform {
-		case PlatFormIos:
+		case PlatformIos:
 			enabledPush = ConfGaurun.Ios.Enabled
-		case PlatFormAndroid:
+		case PlatformAndroid:
 			enabledPush = ConfGaurun.Android.Enabled
+		case PlatformTwilio:
+			enabledPush = ConfGaurun.Twilio.Enabled
 		}
 		// Enqueue notification per token
 		for _, token := range notification.Tokens {
@@ -152,20 +156,59 @@ func pushNotificationAndroid(req RequestGaurunNotification) error {
 	return nil
 }
 
-func validateNotification(notification *RequestGaurunNotification) error {
+func pushNotificationTwilio(req RequestGaurunNotification) error {
+	LogError.Debug("START push notification for Twilio")
 
+	token := req.Tokens[0]
+
+	data := url.Values{
+		"To":   {token},
+		"From": {ConfGaurun.Twilio.FromNumber},
+		"Body": {req.Message},
+	}
+
+	stime := time.Now()
+	resp, err := TwilioClient.Messages.Create(context.Background(), data)
+	etime := time.Now()
+	ptime := etime.Sub(stime).Seconds()
+
+	if err != nil {
+		atomic.AddInt64(&StatGaurun.Twilio.PushError, 1)
+		LogPush(req.ID, StatusFailedPush, token, ptime, req, err)
+		return err
+	}
+
+	if resp.ErrorCode > 0 {
+		atomic.AddInt64(&StatGaurun.Twilio.PushError, 1)
+		LogPush(req.ID, StatusFailedPush, token, ptime, req, errors.New(resp.ErrorMessage))
+		return errors.New(resp.ErrorMessage)
+	}
+
+	LogPush(req.ID, StatusSucceededPush, token, ptime, req, nil)
+
+	atomic.AddInt64(&StatGaurun.Twilio.PushSuccess, int64(len(req.Tokens)))
+	LogError.Debug("END push notification for Twilio")
+
+	return nil
+}
+
+func validateNotification(notification *RequestGaurunNotification) error {
 	for _, token := range notification.Tokens {
 		if len(token) == 0 {
 			return errors.New("empty token")
 		}
 	}
 
-	if notification.Platform < 1 || notification.Platform > 2 {
+	if notification.Platform < PlatformIos || notification.Platform > PlatformTwilio {
 		return errors.New("invalid platform")
 	}
 
 	if len(notification.Message) == 0 {
 		return errors.New("empty message")
+	}
+
+	if notification.Platform == PlatformTwilio && len(notification.Message) > 1600 {
+		return errors.New("message size exceeds 1600 characters")
 	}
 
 	return nil

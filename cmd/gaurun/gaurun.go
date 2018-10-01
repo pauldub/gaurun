@@ -71,7 +71,7 @@ func main() {
 	gaurun.LogAccess = accessLogger
 	gaurun.LogError = errorLogger
 
-	if !gaurun.ConfGaurun.Ios.Enabled && !gaurun.ConfGaurun.Android.Enabled {
+	if !gaurun.ConfGaurun.Ios.Enabled && !gaurun.ConfGaurun.Android.Enabled && !gaurun.ConfGaurun.Twilio.Enabled {
 		gaurun.LogSetupFatal(fmt.Errorf("no platform has been enabled"))
 	}
 
@@ -127,6 +127,13 @@ func main() {
 			gaurun.LogSetupFatal(fmt.Errorf("failed to init http client for APNs: %v", err))
 		}
 	}
+
+	if gaurun.ConfGaurun.Twilio.Enabled {
+		if err := gaurun.InitTwilioClient(); err != nil {
+			gaurun.LogSetupFatal(fmt.Errorf("failed to init http client for Twilio: %v", err))
+		}
+	}
+
 	gaurun.InitStat()
 	gaurun.StartPushWorkers(gaurun.ConfGaurun.Core.WorkerNum, gaurun.ConfGaurun.Core.QueueNum)
 
@@ -189,3 +196,4 @@ func signalHandler(ch <-chan os.Signal, sighupFn func()) {
 		}
 	}
 }
+

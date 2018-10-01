@@ -26,6 +26,16 @@ keepalive_timeout = 30
 keepalive_conns = 6
 retry_max = 1
 
+[twilio]
+account_sid = "account sid for Twilio"
+auth_token = "auth token for Twilio"
+from_number = "from number for Twilio"
+enabled = true
+timeout = 5 # sec
+keepalive_timeout = 30
+keepalive_conns = 4
+retry_max = 1
+
 [log]
 access_log = "stdout"
 error_log = "stderr"

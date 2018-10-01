@@ -14,6 +14,7 @@ type ConfToml struct {
 	Core    SectionCore    `toml:"core"`
 	Android SectionAndroid `toml:"android"`
 	Ios     SectionIos     `toml:"ios"`
+	Twilio  SectionTwilio  `toml:"twilio"`
 	Log     SectionLog     `toml:"log"`
 }
 
@@ -48,6 +49,17 @@ type SectionIos struct {
 	KeepAliveTimeout int    `toml:"keepalive_timeout"`
 	KeepAliveConns   int    `toml:"keepalive_conns"`
 	Topic            string `toml:"topic"`
+}
+
+type SectionTwilio struct {
+	Enabled          bool   `toml:"enabled"`
+	AccountSID       string `toml:"account_sid"`
+	AuthToken        string `toml:"auth_token"`
+	FromNumber       string `toml:"from_number"`
+	Timeout          int    `toml:"timeout"`
+	KeepAliveTimeout int    `toml:"keepalive_timeout"`
+	KeepAliveConns   int    `toml:"keepalive_conns"`
+	RetryMax         int    `toml:"retry_max"`
 }
 
 type SectionLog struct {
@@ -86,6 +98,15 @@ func BuildDefaultConf() ConfToml {
 	conf.Ios.KeepAliveTimeout = 90
 	conf.Ios.KeepAliveConns = numCPU
 	conf.Ios.Topic = ""
+	// Twilio
+	conf.Twilio.Enabled = false
+	conf.Twilio.AccountSID = ""
+	conf.Twilio.AuthToken = ""
+	conf.Twilio.FromNumber = ""
+	conf.Twilio.Timeout = 5
+	conf.Twilio.KeepAliveTimeout = 90
+	conf.Twilio.KeepAliveConns = numCPU
+	conf.Twilio.RetryMax = 1
 	// log
 	conf.Log.AccessLog = "stdout"
 	conf.Log.ErrorLog = "stderr"
